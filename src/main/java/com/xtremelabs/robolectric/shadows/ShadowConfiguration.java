@@ -1,12 +1,11 @@
 package com.xtremelabs.robolectric.shadows;
 
-import java.util.Locale;
-
 import android.content.res.Configuration;
-
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
+
+import java.util.Locale;
 
 @Implements(Configuration.class)
 public class ShadowConfiguration {
@@ -26,5 +25,12 @@ public class ShadowConfiguration {
     
     public void setLocale( Locale l ) {
     	realConfiguration.locale = l;
+    }
+
+    /**
+     * Non-Android accessor.  Use to set screenLayout value
+     */
+    public void setScreenLayout(int screenLayout) {
+        this.screenLayout = screenLayout;
     }
 }
