@@ -26,11 +26,4 @@ public class ShadowConfiguration {
     public void setLocale( Locale l ) {
     	realConfiguration.locale = l;
     }
-
-    /**
-     * Non-Android accessor.  Use to set screenLayout value
-     */
-    public void setScreenLayout(int screenLayout) {
-        this.screenLayout = screenLayout;
-    }
 }

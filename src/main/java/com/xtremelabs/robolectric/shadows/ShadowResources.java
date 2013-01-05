@@ -79,6 +79,13 @@ public class ShadowResources {
         return configuration;
     }
 
+    /**
+     * Non-Android accessor.  Use to mock Configuration
+     */
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Implementation
     public String getString(int id) throws Resources.NotFoundException {
         return resourceLoader.getStringValue(id);
