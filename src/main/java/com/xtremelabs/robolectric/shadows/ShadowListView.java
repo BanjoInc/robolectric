@@ -1,16 +1,16 @@
 package com.xtremelabs.robolectric.shadows;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(ListView.class)
@@ -205,5 +205,21 @@ public class ShadowListView extends ShadowAbsListView {
             return null;
 
         return checkedItemPositions;
+    }
+
+    @Implementation
+    public boolean removeFooterView(View v) {
+        if(footerViews.contains(v)) {
+            Iterator<View> iterator = footerViews.iterator();
+            while (iterator.hasNext()) {
+                View next = iterator.next();
+                if(next.equals(v)) {
+                    iterator.remove();
+                    realListView.removeFooterView(v);
+                    return true;
+                }
+            }
+        }
+        return  false;
     }
 }
