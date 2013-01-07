@@ -20,6 +20,7 @@ public class ShadowFragment {
     private boolean shouldReplace;
     private Bundle arguments;
     private boolean attached;
+    private boolean hasMenu;
 
     public void setView(View view) {
         this.view = view;
@@ -119,5 +120,14 @@ public class ShadowFragment {
 
     public boolean isAttached() {
         return attached;
+    }
+
+    @Implementation
+    public void setHasOptionsMenu(boolean hasMenu) {
+        this.hasMenu = hasMenu;
+    }
+
+    public boolean hasMenu() {
+        return hasMenu;
     }
 }

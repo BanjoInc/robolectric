@@ -3,13 +3,13 @@ package com.xtremelabs.robolectric.shadows;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import com.xtremelabs.robolectric.R;
+import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.WithTestDefaultsRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(WithTestDefaultsRunner.class)
 public class FragmentTest {
@@ -45,5 +45,12 @@ public class FragmentTest {
     @Test(expected = IllegalStateException.class)
     public void unattachedFragmentsCannotGetStrings() throws Exception {
         new TestFragment().getString(R.string.howdy);
+    }
+
+    @Test
+    public void setHasMenuToShadowFragment() throws Exception {
+        assertFalse(Robolectric.shadowOf(fragment).hasMenu());
+        fragment.setHasOptionsMenu(true);
+        assertTrue(Robolectric.shadowOf(fragment).hasMenu());
     }
 }
