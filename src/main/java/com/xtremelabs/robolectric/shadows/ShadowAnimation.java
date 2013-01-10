@@ -24,9 +24,12 @@ public class ShadowAnimation {
     private long startOffset;
     private int loadedFromResourceId = -1;
     private boolean fillAfter;
+    private boolean fillEnabled;
+    private boolean fillBefore;
 
     @RealObject
     private Animation realAnimation;
+
 
     @Implementation
     public void setAnimationListener(Animation.AnimationListener l) {
@@ -112,6 +115,26 @@ public class ShadowAnimation {
     @Implementation
     public boolean getFillAfter() {
         return fillAfter;
+    }
+
+    @Implementation
+    public void setFillEnabled(boolean fillEnabled) {
+        this.fillEnabled = fillEnabled;
+    }
+
+    @Implementation
+    public boolean isFillEnabled() {
+        return this.fillEnabled;
+    }
+
+    @Implementation
+    public void setFillBefore(boolean fillBefore) {
+        this.fillBefore = fillBefore;
+    }
+
+    @Implementation
+    public boolean getFillBefore() {
+        return this.fillBefore;
     }
 
     /**
