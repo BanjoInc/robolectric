@@ -15,9 +15,9 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.ContentObserver;
 import android.database.CursorWrapper;
 import android.database.MergeCursor;
-import android.database.ContentObserver;
 import android.database.sqlite.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
@@ -158,6 +158,7 @@ public class Robolectric {
                 ShadowAssetManager.class,
                 ShadowAsyncTask.class,
                 ShadowAudioManager.class,
+                ShadowAutoCompleteTextView.class,
                 ShadowBaseAdapter.class,
                 ShadowBase64.class,
                 ShadowBinder.class,
@@ -516,6 +517,10 @@ public class Robolectric {
 
     public static ShadowAudioManager shadowOf(AudioManager instance) {
         return (ShadowAudioManager) shadowOf_(instance);
+    }
+
+    public static ShadowAutoCompleteTextView shadowOf(AutoCompleteTextView instance) {
+        return (ShadowAutoCompleteTextView) shadowOf_(instance);
     }
 
     public static ShadowBaseAdapter shadowOf(BaseAdapter other) {
