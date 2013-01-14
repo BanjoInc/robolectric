@@ -43,4 +43,11 @@ public class ShadowAutoCompleteTextView extends ShadowEditText{
     public AdapterView.OnItemClickListener getOnItemClickListener() {
         return onItemClickListener;
     }
+
+    /* Non-Android Accessor
+    *  Reset Drop Down state
+    * */
+    public void resetDropDown(){
+        showDropDownCalled = false;
+    }
 }

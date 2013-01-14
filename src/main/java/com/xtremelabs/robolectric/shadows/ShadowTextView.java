@@ -456,8 +456,12 @@ public class ShadowTextView extends ShadowView {
     }
 
     @Implementation
-    public void setOnEditorActionListener(android.widget.TextView.OnEditorActionListener onEditorActionListener) {
+    public void setOnEditorActionListener(TextView.OnEditorActionListener onEditorActionListener) {
         this.onEditorActionListener = onEditorActionListener;
+    }
+
+    public TextView.OnEditorActionListener getOnEditorActionListener(){
+        return this.onEditorActionListener;
     }
 
     public boolean triggerEditorAction(int imeAction) {
