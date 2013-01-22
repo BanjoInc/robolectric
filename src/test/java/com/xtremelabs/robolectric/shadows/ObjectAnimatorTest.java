@@ -71,4 +71,36 @@ public class ObjectAnimatorTest {
 
         assertThat(ShadowObjectAnimator.getAnimatorsFor(target).get("translationX"), sameInstance(expectedAnimator));
     }
+
+    @Test
+    public void testIsRunning() throws Exception {
+        View target = new View(null);
+        ObjectAnimator expectedAnimator = ObjectAnimator.ofFloat(target, "translationX", 0f, 1f);
+        long duration = 70;
+        expectedAnimator.setDuration(duration);
+
+        assertThat(expectedAnimator.isRunning(), is(false));
+        expectedAnimator.start();
+        assertThat(expectedAnimator.isRunning(), is(true));
+        Robolectric.idleMainLooper(duration);
+        assertThat(expectedAnimator.isRunning(), is(false));
+    }
+
+    @Test
+    public void pauseAndRunEndNotifications() throws Exception {
+        View target = new View(null);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", 0.5f, 0.4f);
+        animator.setDuration(1);
+        TestAnimatorListener endListener = new TestAnimatorListener();
+        animator.addListener(endListener);
+
+        animator.start();
+
+        assertThat(endListener.endWasCalled, equalTo(false));
+        ShadowObjectAnimator.pauseEndNotifications();
+        Robolectric.idleMainLooper(1);
+        assertThat(endListener.endWasCalled, equalTo(false));
+        ShadowObjectAnimator.unpauseEndNotifications();
+        assertThat(endListener.endWasCalled, equalTo(true));
+    }
 }

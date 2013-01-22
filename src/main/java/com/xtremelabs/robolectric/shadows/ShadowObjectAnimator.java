@@ -9,20 +9,26 @@ import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(ObjectAnimator.class)
 public class ShadowObjectAnimator extends ShadowValueAnimator {
+    private static boolean pausingEndNotifications;
+    private static List<ShadowObjectAnimator> pausedEndNotifications = new ArrayList<ShadowObjectAnimator>();
+
     @RealObject
     private ObjectAnimator realObject;
     private Object target;
     private String propertyName;
     private float[] floatValues;
     private Class<?> animationType;
-    private static Map<Object, Map<String, ObjectAnimator>> mapsForAnimationTargets = new HashMap<Object, Map<String, ObjectAnimator>>();
+    private static final Map<Object, Map<String, ObjectAnimator>> mapsForAnimationTargets = new HashMap<Object, Map<String, ObjectAnimator>>();
+    private boolean isRunning;
 
     @Implementation
     public static ObjectAnimator ofFloat(Object target, String propertyName, float... values) {
@@ -83,6 +89,7 @@ public class ShadowObjectAnimator extends ShadowValueAnimator {
 
     @Implementation
     public void start() {
+        isRunning = true;
         String methodName = "set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
         final Method setter;
         notifyStart();
@@ -97,10 +104,15 @@ public class ShadowObjectAnimator extends ShadowValueAnimator {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
+                isRunning = false;
                 try {
-                    notifyEnd();
                     if (animationType == float.class) {
                         setter.invoke(target, floatValues[floatValues.length - 1]);
+                    }
+                    if (pausingEndNotifications) {
+                        pausedEndNotifications.add(ShadowObjectAnimator.this);
+                    } else {
+                        notifyEnd();
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -109,7 +121,23 @@ public class ShadowObjectAnimator extends ShadowValueAnimator {
         }, duration);
     }
 
+    @Implementation
+    public boolean isRunning() {
+        return isRunning;
+    }
+
     public static Map<String, ObjectAnimator> getAnimatorsFor(Object target) {
         return getAnimatorMapFor(target);
+    }
+
+    public static void pauseEndNotifications() {
+        pausingEndNotifications = true;
+    }
+
+    public static void unpauseEndNotifications() {
+        while (pausedEndNotifications.size() > 0) {
+            pausedEndNotifications.remove(0).notifyEnd();
+        }
+        pausingEndNotifications = false;
     }
 }
