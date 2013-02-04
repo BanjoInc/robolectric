@@ -35,11 +35,13 @@ public class ShadowViewPager extends ShadowViewGroup {
         onPageChangeListener = listener;
     }
 
+    /*Non Android accessor*/
+    public ViewPager.OnPageChangeListener getOnPageChangeListener() {
+        return onPageChangeListener;
+    }
+
     @Implementation
     public void setCurrentItem(int position) {
-        if (onPageChangeListener != null) {
-            onPageChangeListener.onPageSelected(position);
-        }
         currentItem = position;
     }
     

@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.WithTestDefaultsRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertSame;
 
 @RunWith(WithTestDefaultsRunner.class)
 public class ViewPagerTest {
@@ -38,12 +41,11 @@ public class ViewPagerTest {
     }
 
     @Test
-    public void setCurrentItem_shouldInvokeListener() throws Exception {
+    public void setCurrentItem_shouldSetListener() throws Exception {
         TestOnPageChangeListener listener = new TestOnPageChangeListener();
         pager.setOnPageChangeListener(listener);
-        assertFalse(listener.onPageSelectedCalled);
-        pager.setCurrentItem(2);
-        assertTrue(listener.onPageSelectedCalled);
+        ViewPager.OnPageChangeListener onPageChangeListener = Robolectric.shadowOf(pager).getOnPageChangeListener();
+        assertEquals(listener, onPageChangeListener);
     }
 
     private static class TestPagerAdapter extends PagerAdapter {
