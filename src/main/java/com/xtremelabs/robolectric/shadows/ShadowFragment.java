@@ -21,6 +21,7 @@ public class ShadowFragment {
     private Bundle arguments;
     private boolean attached;
     private boolean hasMenu;
+    private boolean isAdded;
 
     public void setView(View view) {
         this.view = view;
@@ -129,5 +130,14 @@ public class ShadowFragment {
 
     public boolean hasMenu() {
         return hasMenu;
+    }
+
+    @Implementation
+    public final boolean isAdded() {
+        return isAdded;
+    }
+
+    public void setIsAdded(boolean isAdded) {
+        this.isAdded = isAdded;
     }
 }
