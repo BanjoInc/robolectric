@@ -1,17 +1,18 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.util.AttributeSet;
+import android.webkit.TestWebSettings;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.TestWebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.xtremelabs.robolectric.Robolectric;
+
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
-
-import java.util.HashMap;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(WebView.class)
@@ -36,6 +37,7 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
     private ShadowWebView.LoadData lastLoadData;
     private LoadDataWithBaseURL lastLoadDataWithBaseURL;
     private WebView.PictureListener pictureListener;
+    private Map<String, String> lastHttpHeaders;
 
     @Override
     public void __constructor__(Context context, AttributeSet attributeSet) {
@@ -45,6 +47,21 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
     @Implementation
     public void loadUrl(String url) {
         lastUrl = url;
+    }
+
+    @Implementation
+    public void loadUrl(String url, java.util.Map<String, String> additionalHttpHeaders) {
+        lastUrl = url;
+        lastHttpHeaders = additionalHttpHeaders;
+    }
+
+    /**
+     * Non-Android accessor.
+     *
+     * @return the last loaded additionalHttpHeaders
+     */
+    public Map<String, String> getLastHttpHeaders() {
+        return lastHttpHeaders;
     }
 
     @Implementation
@@ -84,14 +101,14 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
     public WebViewClient getWebViewClient() {
         return webViewClient;
     }
-    
+
     @Implementation
     public void setPictureListener(WebView.PictureListener listener) {
-    	pictureListener = listener;
+        pictureListener = listener;
     }
-    
+
     public WebView.PictureListener getPictureListener() {
-    	return pictureListener;
+        return pictureListener;
     }
 
     @Implementation
@@ -145,23 +162,23 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
     }
 
     @Implementation
-    public void onPause(){
-    	onPauseCalled = true;
+    public void onPause() {
+        onPauseCalled = true;
     }
-    
+
     public boolean wasOnPauseCalled() {
-    	return onPauseCalled;
+        return onPauseCalled;
     }
-    
+
     @Implementation
     public void onResume() {
-    	onResumeCalled = true;
+        onResumeCalled = true;
     }
-    
+
     public boolean wasOnResumeCalled() {
-    	return onResumeCalled;
+        return onResumeCalled;
     }
-    
+
     @Implementation
     public void destroy() {
         destroyCalled = true;
@@ -206,7 +223,7 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
      * Non-Android accessor.
      *
      * @return goBackInvocations the number of times {@code android.webkit.WebView#goBack()}
-     * was invoked
+     *         was invoked
      */
     public int getGoBackInvocations() {
         return goBackInvocations;
@@ -214,7 +231,7 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
 
     /**
      * Non-Android setter.
-     *
+     * <p/>
      * Sets the value to return from {@code android.webkit.WebView#canGoBack()}
      *
      * @param canGoBack
