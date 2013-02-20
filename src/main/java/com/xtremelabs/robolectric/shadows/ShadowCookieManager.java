@@ -1,12 +1,13 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.webkit.CookieManager;
+
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Shadows the {@code android.telephony.TelephonyManager} class.
@@ -15,7 +16,7 @@ import java.util.Map;
 @Implements(CookieManager.class)
 public class ShadowCookieManager {
     private static CookieManager sRef;
-    private Map<String,String> cookies = new HashMap<String, String>();
+    private Map<String, String> cookies = new HashMap<String, String>();
     private boolean accept;
 
     @Implementation
@@ -49,5 +50,14 @@ public class ShadowCookieManager {
     @Implementation
     public void removeAllCookie() {
         cookies.clear();
+    }
+
+    /**
+     * Non-Android accessor.
+     *
+     * @return true if cookies are not empty
+     */
+    public boolean hasCookie() {
+        return !cookies.isEmpty();
     }
 }
