@@ -3,6 +3,7 @@ package com.xtremelabs.robolectric;
 import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.*;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
@@ -48,6 +49,7 @@ import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.format.DateFormat;
 import android.text.method.PasswordTransformationMethod;
@@ -400,6 +402,7 @@ public class Robolectric {
         ShadowMimeTypeMap.reset();
         ShadowPowerManager.reset();
         ShadowStatFs.reset();
+        ShadowTypeface.reset();
     }
 
     public static <T> T directlyOn(T shadowedObject) {
@@ -511,8 +514,8 @@ public class Robolectric {
     }
 
     @SuppressWarnings("rawtypes")
-    public static ShadowAsyncTask shadowOf(AsyncTask instance) {
-        return (ShadowAsyncTask) Robolectric.shadowOf_(instance);
+	public static ShadowAsyncTask shadowOf(AsyncTask instance){
+    	return (ShadowAsyncTask) Robolectric.shadowOf_(instance);
     }
 
     public static ShadowAudioManager shadowOf(AudioManager instance) {
@@ -847,6 +850,10 @@ public class Robolectric {
         return (ShadowNotificationManager) Robolectric.shadowOf_(other);
     }
 
+    public static ShadowObjectAnimator shadowOf(ObjectAnimator instance) {
+        return (ShadowObjectAnimator) shadowOf_(instance);
+    }
+
     public static ShadowPagerAdapter shadowOf(PagerAdapter instance) {
         return (ShadowPagerAdapter) shadowOf_(instance);
     }
@@ -977,6 +984,10 @@ public class Robolectric {
 
     public static ShadowSmsManager shadowOf(SmsManager instance) {
         return (ShadowSmsManager) shadowOf_(instance);
+    }
+
+    public static ShadowSpannableStringBuilder shadowOf(SpannableStringBuilder instance) {
+        return (ShadowSpannableStringBuilder) shadowOf_(instance);
     }
 
     public static <E> ShadowSparseArray<E> shadowOf(SparseArray<E> other) {
