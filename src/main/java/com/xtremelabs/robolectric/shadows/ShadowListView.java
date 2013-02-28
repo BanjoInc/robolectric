@@ -1,16 +1,17 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 @SuppressWarnings({"UnusedDeclaration"})
 @Implements(ListView.class)
@@ -23,6 +24,7 @@ public class ShadowListView extends ShadowAbsListView {
 
     private int choiceMode;
     private SparseBooleanArray checkedItemPositions = new SparseBooleanArray();
+    private int selectionPosition = -1;
 
     @Implementation
     @Override
@@ -221,5 +223,14 @@ public class ShadowListView extends ShadowAbsListView {
             }
         }
         return  false;
+    }
+
+    @Implementation
+    public void setSelection(int position) {
+        this.selectionPosition = position;
+    }
+
+    public int getSelectionPosition() {
+        return selectionPosition;
     }
 }
