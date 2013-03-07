@@ -1,5 +1,9 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,15 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
 import com.xtremelabs.robolectric.tester.android.view.TestWindow;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
 
@@ -42,6 +43,8 @@ public class ShadowDialog {
     private boolean hasShownBefore;
     private static final ArrayList<Dialog> shownDialogs = new ArrayList<Dialog>();
     private boolean isCancelableOnTouchOutside;
+    private int requestedWindowFeature;
+    private View contentView;
 
     public static void reset() {
         setLatestDialog(null);
@@ -262,5 +265,18 @@ public class ShadowDialog {
 
     public static List<Dialog> getShownDialogs() {
         return shownDialogs;
+    }
+
+    @Implementation
+    public final boolean requestWindowFeature(int featureId) {
+        requestedWindowFeature = featureId;
+        return true;
+    }
+
+    /*
+    * Non-Android accessor return @requestedWindowFeature
+    * */
+    public int getRequestedWindowFeature() {
+        return requestedWindowFeature;
     }
 }
