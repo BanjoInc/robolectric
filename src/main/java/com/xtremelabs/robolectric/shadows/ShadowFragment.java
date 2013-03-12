@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
 import android.view.View;
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
@@ -139,5 +140,10 @@ public class ShadowFragment {
 
     public void setIsAdded(boolean isAdded) {
         this.isAdded = isAdded;
+    }
+
+    @Implementation
+    public LoaderManager getLoaderManager() {
+        return new ShadowLoaderManager();
     }
 }
