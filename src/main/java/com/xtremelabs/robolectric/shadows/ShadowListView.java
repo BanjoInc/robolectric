@@ -228,6 +228,9 @@ public class ShadowListView extends ShadowAbsListView {
     @Implementation
     public void setSelection(int position) {
         this.selectionPosition = position;
+        if (getOnItemSelectedListener() != null) {
+            getOnItemSelectedListener().onItemSelected(realListView, realListView.getChildAt(position), position, realListView.getAdapter().getItemId(position));
+        }
     }
 
     public int getSelectionPosition() {
