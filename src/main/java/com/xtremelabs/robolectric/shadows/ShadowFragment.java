@@ -163,4 +163,9 @@ public class ShadowFragment {
             throw new RuntimeException(e);
         }
     }
+
+    @Implementation
+    public static Fragment instantiate(Context context, String fname) {
+        return instantiate(context, fname, null);
+    }
 }
