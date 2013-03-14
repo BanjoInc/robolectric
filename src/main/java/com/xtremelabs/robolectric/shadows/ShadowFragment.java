@@ -1,5 +1,6 @@
 package com.xtremelabs.robolectric.shadows;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.view.View;
+
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 
@@ -145,5 +147,20 @@ public class ShadowFragment {
     @Implementation
     public LoaderManager getLoaderManager() {
         return new ShadowLoaderManager();
+    }
+
+    @Implementation
+    public static Fragment instantiate(Context context, String fname, Bundle args) {
+        try {
+            Class<?> clazz = Fragment.class.getClassLoader().loadClass(fname);
+            Fragment f = (Fragment) clazz.newInstance();
+            if (args != null) {
+                args.setClassLoader(f.getClass().getClassLoader());
+                f.setArguments(args);
+            }
+            return f;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
