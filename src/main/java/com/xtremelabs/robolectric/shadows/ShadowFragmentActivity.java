@@ -1,17 +1,19 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
 import com.xtremelabs.robolectric.tester.android.util.TestFragmentManager;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
 
@@ -84,4 +86,11 @@ public class ShadowFragmentActivity extends ShadowActivity {
 
         outState.putSerializable(FRAGMENTS_TAG, fragmentStates.toArray());
     }
+
+    @Implementation
+    public LoaderManager getSupportLoaderManager() {
+        return new ShadowLoaderManager();
+    }
+
+
 }
