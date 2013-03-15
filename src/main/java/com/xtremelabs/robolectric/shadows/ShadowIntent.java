@@ -1,21 +1,34 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
 import com.xtremelabs.robolectric.util.Join;
 
-import java.io.*;
-import java.util.*;
-
-import static android.content.Intent.*;
+import static android.content.Intent.FILL_IN_ACTION;
+import static android.content.Intent.FILL_IN_CATEGORIES;
+import static android.content.Intent.FILL_IN_COMPONENT;
+import static android.content.Intent.FILL_IN_DATA;
+import static android.content.Intent.FILL_IN_PACKAGE;
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
 
 @SuppressWarnings({"UnusedDeclaration"})
@@ -159,6 +172,11 @@ public class ShadowIntent {
     @Implementation
     public Intent setClassName(Context packageContext, String className) {
         componentName = new ComponentName(packageContext.getPackageName(), className);
+        try {
+            this.intentClass = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            // ignore
+        }
         return realIntent;
     }
 

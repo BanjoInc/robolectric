@@ -274,6 +274,7 @@ public class Robolectric {
                 ShadowMessenger.class,
                 ShadowMimeTypeMap.class,
                 ShadowMotionEvent.class,
+                ShadowNavUtils.class,
                 ShadowNotification.class,
                 ShadowNdefMessage.class,
                 ShadowNdefRecord.class,

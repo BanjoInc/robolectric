@@ -1,22 +1,30 @@
 package com.xtremelabs.robolectric.res;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import android.content.ComponentName;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.util.Pair;
+
 import com.xtremelabs.robolectric.RobolectricConfig;
 import com.xtremelabs.robolectric.tester.android.content.pm.StubPackageManager;
-
-import java.util.*;
 
 public class RobolectricPackageManager extends StubPackageManager {
 
     private Map<String, PackageInfo> packageList;
+    private Map<String, ActivityInfo> activityInfo = new HashMap<String, ActivityInfo>();
     private Map<Intent, List<ResolveInfo>> resolveInfoForIntent = new HashMap<Intent, List<ResolveInfo>>();
     private Map<ComponentName, ComponentState> componentList = new HashMap<ComponentName, ComponentState>();
     private Map<ComponentName, Drawable> drawableList = new HashMap<ComponentName, Drawable>();
@@ -274,5 +282,14 @@ public class RobolectricPackageManager extends StubPackageManager {
             resolveInfoForIntent.put(intent, infoList);
         }
         return infoList;
+    }
+
+    @Override
+    public ActivityInfo getActivityInfo(ComponentName className, int flags) throws NameNotFoundException {
+        return activityInfo.get(className.getClassName());
+    }
+
+    public void addActivityInfo(ActivityInfo info) {
+        activityInfo.put(info.targetActivity, info);
     }
 }

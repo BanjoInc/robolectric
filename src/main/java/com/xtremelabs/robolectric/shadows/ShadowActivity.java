@@ -1,23 +1,5 @@
 package com.xtremelabs.robolectric.shadows;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.text.Selection;
-import android.text.SpannableStringBuilder;
-import android.view.*;
-import android.widget.FrameLayout;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.internal.Implementation;
-import com.xtremelabs.robolectric.internal.Implements;
-import com.xtremelabs.robolectric.internal.RealObject;
-import com.xtremelabs.robolectric.tester.android.view.TestWindow;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,9 +7,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import javassist.bytecode.Mnemonic;
+import android.app.Activity;
+import android.app.Application;
+import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.text.Selection;
+import android.text.SpannableStringBuilder;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
+import com.xtremelabs.robolectric.Robolectric;
+import com.xtremelabs.robolectric.internal.Implementation;
+import com.xtremelabs.robolectric.internal.Implements;
+import com.xtremelabs.robolectric.internal.RealObject;
+import com.xtremelabs.robolectric.tester.android.view.TestWindow;
 
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
+
+//import javassist.bytecode.Mnemonic;
 
 
 @Implements(Activity.class)
@@ -61,6 +68,7 @@ public class ShadowActivity extends ShadowContextWrapper {
 
     private int mDefaultKeyMode = Activity.DEFAULT_KEYS_DISABLE;
     private SpannableStringBuilder mDefaultKeySsb = null;
+    private ComponentName componentName;
 
     public void callOnCreate(Bundle bundle) {
         invokeReflectively("onCreate", Bundle.class, bundle);
@@ -162,31 +170,31 @@ public class ShadowActivity extends ShadowContextWrapper {
     public Intent getIntent() {
         return intent;
     }
-    
+
     @Implementation
     public void setDefaultKeyMode(int keyMode) {
-    	mDefaultKeyMode = keyMode;
-        
+        mDefaultKeyMode = keyMode;
+
         // Some modes use a SpannableStringBuilder to track & dispatch input events
         // This list must remain in sync with the switch in onKeyDown()
         switch (mDefaultKeyMode) {
-        case Activity.DEFAULT_KEYS_DISABLE:
-        case Activity.DEFAULT_KEYS_SHORTCUT:
-        	mDefaultKeySsb = null;      // not used in these modes
-            break;
-        case Activity.DEFAULT_KEYS_DIALER:
-        case Activity.DEFAULT_KEYS_SEARCH_LOCAL:
-        case Activity.DEFAULT_KEYS_SEARCH_GLOBAL:
-        	mDefaultKeySsb = new SpannableStringBuilder();
-            Selection.setSelection(mDefaultKeySsb, 0);
-            break;
-        default:
-            throw new IllegalArgumentException();
+            case Activity.DEFAULT_KEYS_DISABLE:
+            case Activity.DEFAULT_KEYS_SHORTCUT:
+                mDefaultKeySsb = null;      // not used in these modes
+                break;
+            case Activity.DEFAULT_KEYS_DIALER:
+            case Activity.DEFAULT_KEYS_SEARCH_LOCAL:
+            case Activity.DEFAULT_KEYS_SEARCH_GLOBAL:
+                mDefaultKeySsb = new SpannableStringBuilder();
+                Selection.setSelection(mDefaultKeySsb, 0);
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
     }
-    
+
     public int getDefaultKeymode() {
-    	return mDefaultKeyMode;
+        return mDefaultKeyMode;
     }
 
     @Implementation(i18nSafe = false)
@@ -312,10 +320,10 @@ public class ShadowActivity extends ShadowContextWrapper {
         return window;
     }
 
-    public void setWindow(TestWindow wind){
-    	window = wind;
+    public void setWindow(TestWindow wind) {
+        window = wind;
     }
-    
+
     @Implementation
     public void runOnUiThread(Runnable action) {
         Robolectric.getUiThreadScheduler().post(action);
@@ -354,7 +362,7 @@ public class ShadowActivity extends ShadowContextWrapper {
 
     @Implementation
     public SharedPreferences getPreferences(int mode) {
-    	return ShadowPreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return ShadowPreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
     /**
@@ -495,7 +503,7 @@ public class ShadowActivity extends ShadowContextWrapper {
 
         final ActivityInvoker invoker = new ActivityInvoker();
         invoker.call("onActivityResult", Integer.TYPE, Integer.TYPE, Intent.class)
-            .with(requestCode, resultCode, resultIntent);
+                .with(requestCode, resultCode, resultIntent);
     }
 
     @Implementation
@@ -531,10 +539,10 @@ public class ShadowActivity extends ShadowContextWrapper {
 
             if (bundle == null) {
                 invoker.call("onPrepareDialog", Integer.TYPE, Dialog.class)
-                    .with(id, dialog);
+                        .with(id, dialog);
             } else {
                 invoker.call("onPrepareDialog", Integer.TYPE, Dialog.class, Bundle.class)
-                    .with(id, dialog, bundle);
+                        .with(id, dialog, bundle);
             }
 
             dialogForId.put(id, dialog);
@@ -607,30 +615,30 @@ public class ShadowActivity extends ShadowContextWrapper {
         invoker.call("onStart").withNothing();
         invoker.call("onResume").withNothing();
     }
-    
+
     @Implementation
     public void startManagingCursor(Cursor c) {
-    	managedCusors.add(c);
-    }    
+        managedCusors.add(c);
+    }
 
     @Implementation
     public void stopManagingCursor(Cursor c) {
-    	managedCusors.remove(c);
+        managedCusors.remove(c);
     }
-    
+
     public List<Cursor> getManagedCursors() {
-    	return managedCusors;
+        return managedCusors;
     }
-    
+
     private final class ActivityInvoker {
         private Method method;
 
-        public ActivityInvoker call(final String methodName, final Class ...argumentClasses) {
+        public ActivityInvoker call(final String methodName, final Class... argumentClasses) {
             try {
                 method = Activity.class.getDeclaredMethod(methodName, argumentClasses);
                 method.setAccessible(true);
                 return this;
-            } catch(NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -639,16 +647,31 @@ public class ShadowActivity extends ShadowContextWrapper {
             return with();
         }
 
-        public Object with(final Object ...parameters) {
+        public Object with(final Object... parameters) {
             try {
                 return method.invoke(realActivity, parameters);
-            } catch(IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
-            } catch(IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 throw new RuntimeException(e);
-            } catch(InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         }
     }
+
+    @Implementation
+    public ComponentName getComponentName() {
+        return componentName;
+    }
+
+    /**
+     * Non-Android accessor Sets the {@code ComponentName} for this {@code Activity}
+     *
+     * @param componentName
+     */
+    public void setComponentName(ComponentName componentName) {
+        this.componentName = componentName;
+    }
+
 }
