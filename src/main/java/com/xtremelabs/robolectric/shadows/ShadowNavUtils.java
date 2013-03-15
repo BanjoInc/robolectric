@@ -38,7 +38,7 @@ public class ShadowNavUtils {
     public static String getParentActivityName(Context context, ComponentName componentName) throws PackageManager.NameNotFoundException {
         PackageManager pm = context.getPackageManager();
         ActivityInfo info = pm.getActivityInfo(componentName, PackageManager.GET_META_DATA);
-        if (info.metaData == null) return null;
+        if (info == null || info.metaData == null) return null;
         String parentActivity = info.metaData.getString(PARENT_ACTIVITY);
         if (parentActivity == null) return null;
         if (parentActivity.charAt(0) == '.') {

@@ -286,7 +286,7 @@ public class RobolectricPackageManager extends StubPackageManager {
 
     @Override
     public ActivityInfo getActivityInfo(ComponentName className, int flags) throws NameNotFoundException {
-        return activityInfo.get(className.getClassName());
+        return className == null ? null : activityInfo.get(className.getClassName());
     }
 
     public void addActivityInfo(ActivityInfo info) {
