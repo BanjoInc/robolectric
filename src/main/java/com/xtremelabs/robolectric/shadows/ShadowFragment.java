@@ -1,5 +1,8 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.lang.Object;
+import java.lang.String;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -78,6 +81,14 @@ public class ShadowFragment {
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
         return getResources().getString(id);
+    }
+
+    @Implementation
+    public final String getString(int resId, Object... formatArgs) {
+        if (activity == null) {
+            throw new IllegalStateException("Fragment " + this + " not attached to Activity");
+        }
+        return getResources().getString(resId, formatArgs);
     }
 
     public void setTag(String tag) {
