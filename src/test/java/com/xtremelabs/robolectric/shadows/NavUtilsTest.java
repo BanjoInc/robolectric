@@ -27,7 +27,7 @@ public class NavUtilsTest {
     @Before
     public void setup() throws Exception {
         application = Robolectric.application;
-        RobolectricPackageManager rpm = (RobolectricPackageManager) Robolectric.application.getPackageManager();
+        RobolectricPackageManager rpm = (RobolectricPackageManager) application.getPackageManager();
         ActivityInfo info = new ActivityInfo();
         info.targetActivity = "com.xtremelabs.robolectric.res.ViewLoaderTest.ClickActivity";
         info.parentActivityName = OnMethodTestActivity.class.getName();
