@@ -278,9 +278,10 @@ public class Robolectric {
                 ShadowNotification.class,
                 ShadowNdefMessage.class,
                 ShadowNdefRecord.class,
+                ShadowNetworkInfo.class,
                 ShadowNfcAdapter.class,
                 ShadowNotificationManager.class,
-                ShadowNetworkInfo.class,
+                ShadowNumberPicker.class,
                 ShadowOverlayItem.class,
                 ShadowObjectAnimator.class,
                 ShadowPagerAdapter.class,
@@ -379,6 +380,7 @@ public class Robolectric {
                 ShadowViewStub.class,
                 ShadowViewTreeObserver.class,
                 ShadowWebView.class,
+                ShadowWebViewDatabase.class,
                 ShadowWifiConfiguration.class,
                 ShadowWifiInfo.class,
                 ShadowWifiManager.class,
@@ -855,6 +857,10 @@ public class Robolectric {
         return (ShadowObjectAnimator) shadowOf_(instance);
     }
 
+    public static ShadowNumberPicker shadowOf(NumberPicker other) {
+        return (ShadowNumberPicker) Robolectric.shadowOf_(other);
+    }
+
     public static ShadowPagerAdapter shadowOf(PagerAdapter instance) {
         return (ShadowPagerAdapter) shadowOf_(instance);
     }
@@ -1118,6 +1124,10 @@ public class Robolectric {
 
     public static ShadowWebView shadowOf(WebView instance) {
         return (ShadowWebView) shadowOf_(instance);
+    }
+
+    public static ShadowWebViewDatabase shadowOf(WebViewDatabase instance) {
+        return (ShadowWebViewDatabase) shadowOf_(instance);
     }
 
     public static ShadowWifiConfiguration shadowOf(WifiConfiguration instance) {
