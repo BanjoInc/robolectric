@@ -1,5 +1,8 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.io.InputStream;
+import java.util.Locale;
+
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -12,15 +15,13 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Display;
+
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
 import com.xtremelabs.robolectric.res.ResourceExtractor;
 import com.xtremelabs.robolectric.res.ResourceLoader;
-
-import java.io.InputStream;
-import java.util.Locale;
 
 import static com.xtremelabs.robolectric.Robolectric.newInstanceOf;
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
@@ -233,6 +234,12 @@ public class ShadowResources {
     public final android.content.res.Resources.Theme newTheme() {
         return newInstanceOf(Resources.Theme.class);
     }
+
+    @Implementation
+    public TypedArray obtainAttributes(AttributeSet set, int[] attrs) {
+        return newInstanceOf(TypedArray.class);
+    }
+
 
     @Implements(Resources.Theme.class)
     public static class ShadowTheme {
