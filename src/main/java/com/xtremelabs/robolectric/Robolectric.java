@@ -232,6 +232,7 @@ public class Robolectric {
                 ShadowHandlerThread.class,
                 ShadowHtml.class,
                 ShadowImageView.class,
+                ShadowImageSpan.class,
                 ShadowInputMethodManager.class,
                 ShadowInputDevice.class,
                 ShadowInputEvent.class,
