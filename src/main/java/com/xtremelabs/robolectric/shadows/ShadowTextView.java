@@ -55,6 +55,7 @@ public class ShadowTextView extends ShadowView {
     private List<TextWatcher> watchers = new ArrayList<TextWatcher>();
     private List<Integer> previousKeyCodes = new ArrayList<Integer>();
     private List<KeyEvent> previousKeyEvents = new ArrayList<KeyEvent>();
+    private List<CharSequence> appendedText = new ArrayList<CharSequence>();
     private Layout layout;
 
     @Override
@@ -84,6 +85,7 @@ public class ShadowTextView extends ShadowView {
 
     @Implementation
     public final void append(CharSequence text) {
+        appendedText.add(text);
         boolean isSelectStartAtEnd = selectionStart == this.text.length();
         boolean isSelectEndAtEnd = selectionEnd == this.text.length();
         CharSequence oldValue = this.text;
@@ -102,6 +104,10 @@ public class ShadowTextView extends ShadowView {
 
         sendOnTextChanged(oldValue);
         sendAfterTextChanged();
+    }
+
+    public List<CharSequence> getAppendedText() {
+        return appendedText;
     }
 
     @Implementation
