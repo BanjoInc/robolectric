@@ -90,6 +90,8 @@ public class ShadowView {
     private int hapticFeedbackPerformed = -1;
     private boolean onLayoutWasCalled;
 
+    private boolean showContextMenuWasCalled;
+
     public void __constructor__(Context context) {
         __constructor__(context, null);
     }
@@ -1141,5 +1143,19 @@ public class ShadowView {
 
     public int lastHapticFeedbackPerformed() {
         return hapticFeedbackPerformed;
+    }
+    
+    @Implementation
+    public boolean showContextMenu() {
+        showContextMenuWasCalled = true;
+        return true;
+    }
+    
+    public boolean isContextMenuShown() {
+        return showContextMenuWasCalled;
+    }
+    
+    public void resetContextMenu() {
+        showContextMenuWasCalled = false;
     }
 }
