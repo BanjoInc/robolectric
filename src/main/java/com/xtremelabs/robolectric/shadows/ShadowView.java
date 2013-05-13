@@ -1,5 +1,11 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -7,19 +13,20 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.TouchDelegate;
+import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
+
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
-
-import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.xtremelabs.robolectric.Robolectric.Reflection.newInstanceOf;
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
@@ -252,6 +259,10 @@ public class ShadowView {
     @Implementation
     public final Context getContext() {
         return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     @Implementation
