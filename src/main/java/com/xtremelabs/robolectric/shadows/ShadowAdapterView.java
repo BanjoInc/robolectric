@@ -33,6 +33,7 @@ public class ShadowAdapterView extends ShadowViewGroup {
     private int itemCount = 0;
 
     private List<Object> previousItems = new ArrayList<Object>();
+    private int firstVisiblePosition;
 
     @Implementation
     public void setAdapter(Adapter adapter) {
@@ -324,6 +325,14 @@ public class ShadowAdapterView extends ShadowViewGroup {
             }
             previousItems = newItems;
         }
+    }
+
+    public int getFirstVisiblePosition() {
+        return firstVisiblePosition;
+    }
+
+    public void setFirstVisiblePosition(int firstVisiblePosition) {
+        this.firstVisiblePosition = firstVisiblePosition;
     }
 
     /**
