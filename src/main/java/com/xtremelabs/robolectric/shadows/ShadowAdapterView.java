@@ -1,16 +1,17 @@
 package com.xtremelabs.robolectric.shadows;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.database.DataSetObserver;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
 import com.xtremelabs.robolectric.internal.RealObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
 
@@ -327,6 +328,7 @@ public class ShadowAdapterView extends ShadowViewGroup {
         }
     }
 
+    @Implementation
     public int getFirstVisiblePosition() {
         return firstVisiblePosition;
     }
