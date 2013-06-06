@@ -53,6 +53,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.format.DateFormat;
 import android.text.method.PasswordTransformationMethod;
+import android.text.style.ScaleXSpan;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
@@ -319,6 +320,7 @@ public class Robolectric {
                 ShadowResourceCursorAdapter.class,
                 ShadowResources.class,
                 ShadowResources.ShadowTheme.class,
+                ShadowScaleXSpan.class,
                 ShadowScaleGestureDetector.class,
                 ShadowScanResult.class,
                 ShadowScrollView.class,
@@ -955,6 +957,10 @@ public class Robolectric {
 
     public static ShadowScaleGestureDetector shadowOf(ScaleGestureDetector instance) {
         return (ShadowScaleGestureDetector) shadowOf_(instance);
+    }
+
+    public static ShadowScaleXSpan shadowOf(ScaleXSpan instance) {
+        return (ShadowScaleXSpan) shadowOf_(instance);
     }
 
     public static ShadowScanResult shadowOf(ScanResult instance) {

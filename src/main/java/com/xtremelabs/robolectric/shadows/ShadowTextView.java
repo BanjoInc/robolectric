@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static android.widget.TextView.BufferType;
 import static com.xtremelabs.robolectric.Robolectric.shadowOf;
 import static com.xtremelabs.robolectric.Robolectric.shadowOf_;
 
@@ -56,6 +57,7 @@ public class ShadowTextView extends ShadowView {
     private List<Integer> previousKeyCodes = new ArrayList<Integer>();
     private List<KeyEvent> previousKeyEvents = new ArrayList<KeyEvent>();
     private Layout layout;
+    private BufferType bufferType = BufferType.NORMAL;
 
     @Override
     public void applyAttributes() {
@@ -76,7 +78,7 @@ public class ShadowTextView extends ShadowView {
         sendBeforeTextChanged(text);
 
         CharSequence oldValue = this.text;
-        this.text = text;
+        ((TextView) realView).setText(text, BufferType.NORMAL);
 
         sendOnTextChanged(oldValue);
         sendAfterTextChanged();
@@ -109,10 +111,20 @@ public class ShadowTextView extends ShadowView {
         sendBeforeTextChanged(text);
 
         CharSequence oldValue = this.text;
-        this.text = getResources().getText(textResourceId);
+        ((TextView) realView).setText(getResources().getText(textResourceId), BufferType.NORMAL);
 
         sendOnTextChanged(oldValue);
         sendAfterTextChanged();
+    }
+
+    @Implementation
+    public void setText(CharSequence text, BufferType bufferType) {
+        this.text = text;
+        this.bufferType = bufferType;
+    }
+
+    public BufferType getBufferType() {
+        return bufferType;
     }
 
     private void sendAfterTextChanged() {
