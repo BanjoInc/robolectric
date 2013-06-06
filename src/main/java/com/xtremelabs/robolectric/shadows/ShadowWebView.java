@@ -38,6 +38,7 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
     private LoadDataWithBaseURL lastLoadDataWithBaseURL;
     private WebView.PictureListener pictureListener;
     private Map<String, String> lastHttpHeaders;
+    private int contentHeight;
 
     @Override
     public void __constructor__(Context context, AttributeSet attributeSet) {
@@ -218,6 +219,14 @@ public class ShadowWebView extends ShadowAbsoluteLayout {
         goBackInvocations++;
     }
 
+    @Implementation
+    public int getContentHeight() {
+        return contentHeight;
+    }
+
+    public void setContentHeight(int contentHeight) {
+        this.contentHeight = contentHeight;
+    }
 
     /**
      * Non-Android accessor.

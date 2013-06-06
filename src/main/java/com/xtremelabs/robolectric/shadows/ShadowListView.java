@@ -25,6 +25,7 @@ public class ShadowListView extends ShadowAbsListView {
     private int choiceMode;
     private SparseBooleanArray checkedItemPositions = new SparseBooleanArray();
     private int selectionPosition = -1;
+    private int selectionFromTopDistance;
 
     @Implementation
     @Override
@@ -235,5 +236,15 @@ public class ShadowListView extends ShadowAbsListView {
 
     public int getSelectionPosition() {
         return selectionPosition;
+    }
+
+    @Implementation
+    public void setSelectionFromTop(int position, int y) {
+        selectionPosition = position;
+        selectionFromTopDistance = y;
+    }
+
+    public int getSelectionFromTopDistance() {
+        return selectionFromTopDistance;
     }
 }

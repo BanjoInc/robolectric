@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
+import android.widget.LinearLayout;
+
 import com.xtremelabs.robolectric.Robolectric;
 
 public class TestWindow extends Window {
@@ -165,7 +167,7 @@ public class TestWindow extends Window {
 
     @Override
     public View getDecorView() {
-        return new View(Robolectric.application);
+        return new LinearLayout(Robolectric.application);
     }
 
     @Override

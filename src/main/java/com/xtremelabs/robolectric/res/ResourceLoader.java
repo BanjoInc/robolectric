@@ -603,4 +603,19 @@ public class ResourceLoader {
 		init();
 		viewLoader.setLayoutQualifierSearchPath( locations );
 	}
+	
+	public void loadLibraryProjectResources(File libraryProjectRoot) throws Exception {
+	    File systemResourceDir = getSystemResourceDir( getPathToAndroidResources() );
+            File localValueResourceDir = getValueResourceDir( libraryProjectRoot, null, true );
+            File systemValueResourceDir = getValueResourceDir( systemResourceDir, null, false );
+	 
+	    loadStringResources(localValueResourceDir, systemValueResourceDir);
+	    loadPluralsResources(localValueResourceDir, systemValueResourceDir);
+	    loadValueResources(localValueResourceDir, systemValueResourceDir);
+	    loadDimenResources(localValueResourceDir, systemValueResourceDir);
+	    loadIntegerResource(localValueResourceDir, systemValueResourceDir);
+	    loadViewResources(systemResourceDir, libraryProjectRoot);
+	    loadMenuResources(libraryProjectRoot);
+	    loadDrawableResources(libraryProjectRoot);
+	}
 }

@@ -9,6 +9,7 @@ import com.xtremelabs.robolectric.internal.Implements;
 public class ShadowLinearLayout extends ShadowViewGroup {
     private int orientation;
     private int gravity = Gravity.TOP | Gravity.START;
+    private float weightSum;
 
     public ShadowLinearLayout() {
         setLayoutParams(new LinearLayout.LayoutParams(0, 0));
@@ -32,4 +33,16 @@ public class ShadowLinearLayout extends ShadowViewGroup {
     public void setGravity(int gravity) {
         this.gravity = gravity;
     }
+
+    @Implementation
+    public void setWeightSum(float weightSum) {
+        this.weightSum = weightSum;
+    }
+
+    @Implementation
+    public float getWeightSum() {
+        return weightSum;
+    }
+
+
 }
