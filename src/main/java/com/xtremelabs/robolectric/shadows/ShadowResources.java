@@ -38,7 +38,6 @@ public class ShadowResources {
     Configuration configuration = null;
     private DisplayMetrics displayMetrics;
     private Display display;
-    public boolean ignoreResourceNotFound = true;
 
     static Resources bind(Resources resources, ResourceLoader resourceLoader) {
         ShadowResources shadowResources = shadowOf(resources);
@@ -189,40 +188,16 @@ public class ShadowResources {
 
     @Implementation
     public float getDimension(int id) throws Resources.NotFoundException {
-        if (ignoreResourceNotFound) {
-            try {
-                return resourceLoader.getDimenValue(id);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return 0;
-            }
-        }
         return resourceLoader.getDimenValue(id);
     }
 
     @Implementation
     public int getInteger(int id) throws Resources.NotFoundException {
-        if (ignoreResourceNotFound) {
-            try {
-                return resourceLoader.getIntegerValue(id);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return 0;
-            }
-        }
         return resourceLoader.getIntegerValue(id);
     }
 
     @Implementation
     public boolean getBoolean(int id) throws Resources.NotFoundException {
-        if (ignoreResourceNotFound) {
-            try {
-                return resourceLoader.getBooleanValue(id);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
         return resourceLoader.getBooleanValue(id);
     }
 
@@ -282,9 +257,5 @@ public class ShadowResources {
         public TypedArray obtainStyledAttributes(AttributeSet set, int[] attrs, int defStyleAttr, int defStyleRes) {
             return newInstanceOf(TypedArray.class);
         }
-    }
-
-    public void setIgnoreResourceNotFound(boolean ignore) {
-        ignoreResourceNotFound = ignore;
     }
 }
