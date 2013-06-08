@@ -38,6 +38,7 @@ public class ShadowResources {
     Configuration configuration = null;
     private DisplayMetrics displayMetrics;
     private Display display;
+    public boolean ignoreResourceNotFound = true;
 
     static Resources bind(Resources resources, ResourceLoader resourceLoader) {
         ShadowResources shadowResources = shadowOf(resources);
@@ -180,7 +181,7 @@ public class ShadowResources {
         }
 
         if (resLoader.isNinePatchDrawable(drawableResourceId)) {
-        	return new NinePatchDrawable(realResources, null);
+            return new NinePatchDrawable(realResources, null);
         }
 
         return new BitmapDrawable(BitmapFactory.decodeResource(realResources, drawableResourceId));
@@ -188,17 +189,41 @@ public class ShadowResources {
 
     @Implementation
     public float getDimension(int id) throws Resources.NotFoundException {
+        if (ignoreResourceNotFound) {
+            try {
+                return resourceLoader.getDimenValue(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
         return resourceLoader.getDimenValue(id);
     }
 
     @Implementation
     public int getInteger(int id) throws Resources.NotFoundException {
-    	return resourceLoader.getIntegerValue( id );
+        if (ignoreResourceNotFound) {
+            try {
+                return resourceLoader.getIntegerValue(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+        return resourceLoader.getIntegerValue(id);
     }
 
     @Implementation
     public boolean getBoolean(int id) throws Resources.NotFoundException {
-    	return resourceLoader.getBooleanValue( id );
+        if (ignoreResourceNotFound) {
+            try {
+                return resourceLoader.getBooleanValue(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return resourceLoader.getBooleanValue(id);
     }
 
     @Implementation
@@ -222,12 +247,12 @@ public class ShadowResources {
 
     @Implementation
     public XmlResourceParser getXml(int id)
-    		throws Resources.NotFoundException {
-    	XmlResourceParser parser = resourceLoader.getXml(id);
-    	if (parser == null) {
-    		throw new Resources.NotFoundException();
-    	}
-    	return parser;
+            throws Resources.NotFoundException {
+        XmlResourceParser parser = resourceLoader.getXml(id);
+        if (parser == null) {
+            throw new Resources.NotFoundException();
+        }
+        return parser;
     }
 
     @Implementation
@@ -259,4 +284,7 @@ public class ShadowResources {
         }
     }
 
+    public void setIgnoreResourceNotFound(boolean ignore) {
+        ignoreResourceNotFound = ignore;
+    }
 }
