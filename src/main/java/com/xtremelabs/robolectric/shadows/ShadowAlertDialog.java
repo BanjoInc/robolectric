@@ -45,6 +45,10 @@ public class ShadowAlertDialog extends ShadowDialog {
     private ListAdapter adapter;
     private ListView listView;
     private FrameLayout custom;
+    private int mViewSpacingLeft;
+    private int mViewSpacingTop;
+    private int mViewSpacingRight;
+    private int mViewSpacingBottom;
 
     /**
      * Non-Android accessor.
@@ -79,6 +83,11 @@ public class ShadowAlertDialog extends ShadowDialog {
 
     @Implementation
     public void setView(View view) {
+        this.view = view;
+    }
+
+    @Implementation
+    public void setView(View view, int viewSpacingLeft, int viewSpacingTop, int viewSpacingRight, int viewSpacingBottom) {
         this.view = view;
     }
 
