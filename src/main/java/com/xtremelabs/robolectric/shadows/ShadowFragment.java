@@ -28,6 +28,7 @@ public class ShadowFragment {
     private boolean attached;
     private boolean hasMenu;
     private boolean isAdded;
+    private boolean isResumed;
 
     public void setView(View view) {
         this.view = view;
@@ -153,6 +154,15 @@ public class ShadowFragment {
 
     public void setIsAdded(boolean isAdded) {
         this.isAdded = isAdded;
+    }
+
+    @Implementation
+    public final boolean isResumed() {
+        return isResumed;
+    }
+
+    public void setResumed(boolean resumed) {
+        isResumed = resumed;
     }
 
     @Implementation
