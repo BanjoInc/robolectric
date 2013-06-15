@@ -206,6 +206,10 @@ public class ShadowDialog {
         return onCancelListener;
     }
 
+    public DialogInterface.OnDismissListener getOnDismissListener() {
+        return onDismissListener;
+    }
+
     @Implementation
     public Window getWindow() {
         if (window == null) {
