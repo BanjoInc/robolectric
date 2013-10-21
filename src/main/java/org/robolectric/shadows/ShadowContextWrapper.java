@@ -13,18 +13,20 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.os.Looper;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.List;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
 import org.robolectric.res.ResourceLoader;
 import org.robolectric.tester.android.content.TestSharedPreferences;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.List;
 
 import static android.database.sqlite.SQLiteDatabase.CursorFactory;
 import static org.robolectric.Robolectric.shadowOf;
@@ -49,7 +51,8 @@ public class ShadowContextWrapper extends ShadowContext {
 
   @Implementation
   public Context getApplicationContext() {
-    return realContextWrapper.getBaseContext().getApplicationContext();
+    Context applicationContext = realContextWrapper.getBaseContext().getApplicationContext();
+    return applicationContext == null ? Robolectric.application : applicationContext;
   }
 
   @Implementation
@@ -141,6 +144,11 @@ public class ShadowContextWrapper extends ShadowContext {
     getApplicationContext().sendBroadcast(intent);
   }
 
+  @Implementation
+  public void sendBroadcast(Intent intent, String receiverPermission) {
+    getApplicationContext().sendBroadcast(intent, receiverPermission);
+  }
+
   public List<Intent> getBroadcastIntents() {
     return ((ShadowApplication) shadowOf(getApplicationContext())).getBroadcastIntents();
   }
@@ -152,7 +160,12 @@ public class ShadowContextWrapper extends ShadowContext {
 
   @Implementation
   public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-    return ((ShadowApplication) shadowOf(getApplicationContext())).registerReceiverWithContext(receiver, filter, realContextWrapper);
+    return ((ShadowApplication) shadowOf(getApplicationContext())).registerReceiverWithContext(receiver, filter, null, null, realContextWrapper);
+  }
+
+  @Implementation
+  public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter, String broadcastPermission, Handler scheduler) {
+    return ((ShadowApplication) shadowOf(getApplicationContext())).registerReceiverWithContext(receiver, filter, broadcastPermission, scheduler, realContextWrapper);
   }
 
   @Implementation
