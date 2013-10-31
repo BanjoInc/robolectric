@@ -183,6 +183,7 @@ import org.robolectric.shadows.ShadowAssetManager;
 import org.robolectric.shadows.ShadowAsyncTask;
 import org.robolectric.shadows.ShadowAudioManager;
 import org.robolectric.shadows.ShadowBaseAdapter;
+import org.robolectric.shadows.ShadowBinder;
 import org.robolectric.shadows.ShadowBitmap;
 import org.robolectric.shadows.ShadowBitmapDrawable;
 import org.robolectric.shadows.ShadowBitmapFactory;
@@ -276,7 +277,6 @@ import org.robolectric.shadows.ShadowResources;
 import org.robolectric.shadows.ShadowResultReceiver;
 import org.robolectric.shadows.ShadowSQLiteCursor;
 import org.robolectric.shadows.ShadowSQLiteDatabase;
-import org.robolectric.shadows.ShadowSQLiteOpenHelper;
 import org.robolectric.shadows.ShadowSQLiteProgram;
 import org.robolectric.shadows.ShadowSQLiteQueryBuilder;
 import org.robolectric.shadows.ShadowSQLiteStatement;
@@ -329,7 +329,7 @@ import java.util.List;
 import static org.fest.reflect.core.Reflection.method;
 
 public class Robolectric {
-  public static final int DEFAULT_SDK_VERSION = 16;
+  public static final int DEFAULT_SDK_VERSION = 18;
 
   public static Application application;
   public static RobolectricPackageManager packageManager;
@@ -888,10 +888,6 @@ public class Robolectric {
     return (ShadowSQLiteDatabase) Robolectric.shadowOf_(other);
   }
 
-  public static ShadowSQLiteOpenHelper shadowOf(SQLiteOpenHelper other) {
-    return (ShadowSQLiteOpenHelper) Robolectric.shadowOf_(other);
-  }
-
   public static ShadowSQLiteProgram shadowOf(SQLiteProgram other) {
     return (ShadowSQLiteProgram) Robolectric.shadowOf_(other);
   }
@@ -1332,6 +1328,7 @@ public class Robolectric {
     Robolectric.activityThread = null;
     ShadowAccountManager.reset();
     ShadowResources.reset();
+    ShadowBinder.reset();
     ShadowBitmapFactory.reset();
     ShadowDrawable.reset();
     ShadowMediaStore.reset();

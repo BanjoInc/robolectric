@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Looper;
@@ -133,11 +134,6 @@ public class ShadowContextWrapper extends ShadowContext {
   public ContentResolver getContentResolver() {
     return getApplicationContext().getContentResolver();
   }
-
-  //@Implementation
-  //public Object getSystemService(String name) {
-  //  return getApplicationContext().getSystemService(name);
-  //}
 
   @Implementation
   public void sendBroadcast(Intent intent) {
@@ -327,6 +323,11 @@ public class ShadowContextWrapper extends ShadowContext {
 
   @Implementation
   public SQLiteDatabase openOrCreateDatabase(String name, int mode, CursorFactory factory) {
-    return SQLiteDatabase.openDatabase(name, factory, 0);
+    return super.openOrCreateDatabase(name, mode, factory);
+  }
+
+  @Implementation
+  public SQLiteDatabase openOrCreateDatabase(String name, int mode, CursorFactory factory, DatabaseErrorHandler databaseErrorHandler) {
+    return super.openOrCreateDatabase(name, mode, factory, databaseErrorHandler);
   }
 }
