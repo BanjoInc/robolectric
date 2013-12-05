@@ -30,10 +30,9 @@ import org.robolectric.AndroidManifest;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.R;
 import org.robolectric.Robolectric;
-import org.robolectric.TestRunners;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.Fs;
-import org.robolectric.shadows.testing.OnMethodTestActivity;
 import org.robolectric.test.TemporaryFolder;
 import org.robolectric.util.ActivityController;
 import org.robolectric.util.TestRunnable;
@@ -56,10 +55,39 @@ import static org.robolectric.Robolectric.application;
 import static org.robolectric.Robolectric.buildActivity;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(TestRunners.WithDefaults.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(manifest = "src/test/resources/TestAndroidManifest.xml")
 public class ActivityTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
   private Activity activity;
+
+  @Test
+  @Config(manifest = "src/test/resources/TestAndroidManifestWithLabels.xml")
+  public void shouldUseApplicationLabelFromManifestAsTitleForActivity() throws Exception {
+    activity = create(LabelTestActivity1.class);
+    assertThat(activity.getTitle()).isNotNull();
+    assertThat(activity.getTitle().toString()).isEqualTo(activity.getString(R.string.app_name));
+  }
+
+  @Test
+  @Config(manifest = "src/test/resources/TestAndroidManifestWithLabels.xml")
+  public void shouldUseActivityLabelFromManifestAsTitleForActivity() throws Exception {
+    activity = create(LabelTestActivity2.class);
+    assertThat(activity.getTitle()).isNotNull();
+    assertThat(activity.getTitle().toString()).isEqualTo(activity.getString(R.string.activity_name));
+  }
+
+  @Test
+  @Config(manifest = "src/test/resources/TestAndroidManifestWithLabels.xml")
+  public void shouldUseActivityLabelFromManifestAsTitleForActivityWithShortName() throws Exception {
+    activity = create(LabelTestActivity3.class);
+    assertThat(activity.getTitle()).isNotNull();
+    assertThat(activity.getTitle().toString()).isEqualTo(activity.getString(R.string.activity_name));
+  }
+
+  public static final class LabelTestActivity1 extends Activity {}
+  public static final class LabelTestActivity2 extends Activity {}
+  public static final class LabelTestActivity3 extends Activity {}
 
   @Test(expected = IllegalStateException.class)
   public void shouldComplainIfActivityIsDestroyedWithRegisteredBroadcastReceivers() throws Exception {
@@ -510,7 +538,6 @@ public class ActivityTest {
         "onStart",
         "onResume"
     );
-
   }
 
   @Test
@@ -622,64 +649,6 @@ public class ActivityTest {
       transcript.add("onResume");
       super.onResume();
     }
-  }
-
-  @Test
-  public void callOnXxxMethods_shouldCallProtectedVersions() throws Exception {
-    final Transcript transcript = new Transcript();
-
-    Activity activity = new OnMethodTestActivity(transcript);
-
-    ShadowActivity shadowActivity = shadowOf(activity);
-
-    Bundle bundle = new Bundle();
-    bundle.putString("key", "value");
-    shadowActivity.callOnCreate(bundle);
-    transcript.assertEventsSoFar("onCreate was called with value");
-
-    shadowActivity.callOnStart();
-    transcript.assertEventsSoFar("onStart was called");
-
-    shadowActivity.callOnRestoreInstanceState(null);
-    transcript.assertEventsSoFar("onRestoreInstanceState was called");
-
-    shadowActivity.callOnPostCreate(null);
-    transcript.assertEventsSoFar("onPostCreate was called");
-
-    shadowActivity.callOnRestart();
-    transcript.assertEventsSoFar("onRestart was called");
-
-    shadowActivity.callOnResume();
-    transcript.assertEventsSoFar("onResume was called");
-
-    shadowActivity.callOnPostResume();
-    transcript.assertEventsSoFar("onPostResume was called");
-
-    Intent intent = new Intent("some action");
-    shadowActivity.callOnNewIntent(intent);
-    transcript.assertEventsSoFar("onNewIntent was called with " + intent);
-
-    shadowActivity.callOnSaveInstanceState(null);
-    transcript.assertEventsSoFar("onSaveInstanceState was called");
-
-    shadowActivity.callOnPause();
-    transcript.assertEventsSoFar("onPause was called");
-
-    shadowActivity.callOnUserLeaveHint();
-    transcript.assertEventsSoFar("onUserLeaveHint was called");
-
-    shadowActivity.callOnStop();
-    transcript.assertEventsSoFar("onStop was called");
-
-    shadowActivity.callOnDestroy();
-    transcript.assertEventsSoFar("onDestroy was called");
-  }
-
-  @Test
-  public void callOnXxxMethods_shouldWorkIfNotDeclaredOnConcreteClass() throws Exception {
-    Activity activity = new Activity() {
-    };
-    shadowOf(activity).callOnStart();
   }
 
   @Test

@@ -39,7 +39,6 @@ import android.database.CursorWrapper;
 import android.database.MergeCursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteProgram;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
@@ -90,6 +89,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.widget.DrawerLayout;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
@@ -136,6 +136,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RemoteViews;
@@ -150,6 +151,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 import android.widget.ViewAnimator;
 import android.widget.ZoomButtonsController;
+
 import org.apache.http.Header;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -217,6 +219,7 @@ import org.robolectric.shadows.ShadowDialog;
 import org.robolectric.shadows.ShadowDialogPreference;
 import org.robolectric.shadows.ShadowDisplay;
 import org.robolectric.shadows.ShadowDrawable;
+import org.robolectric.shadows.ShadowDrawerLayout;
 import org.robolectric.shadows.ShadowEditTextPreference;
 import org.robolectric.shadows.ShadowExpandableListView;
 import org.robolectric.shadows.ShadowFilter;
@@ -261,6 +264,7 @@ import org.robolectric.shadows.ShadowPaint;
 import org.robolectric.shadows.ShadowParcel;
 import org.robolectric.shadows.ShadowPath;
 import org.robolectric.shadows.ShadowPendingIntent;
+import org.robolectric.shadows.ShadowPopupMenu;
 import org.robolectric.shadows.ShadowPopupWindow;
 import org.robolectric.shadows.ShadowPowerManager;
 import org.robolectric.shadows.ShadowPreference;
@@ -1010,6 +1014,14 @@ public class Robolectric {
 
   public static ShadowWindowManager shadowOf(WindowManager instance) {
     return (ShadowWindowManager) shadowOf_(instance);
+  }
+
+  public static ShadowDrawerLayout shadowOf(DrawerLayout instance) {
+    return (ShadowDrawerLayout) shadowOf_(instance);
+  }
+
+  public static ShadowPopupMenu shadowOf(PopupMenu instance) {
+    return (ShadowPopupMenu) shadowOf_(instance);
   }
 
   @SuppressWarnings({"unchecked"})

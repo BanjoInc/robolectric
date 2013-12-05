@@ -63,7 +63,6 @@ public class ShadowActivity extends ShadowContextThemeWrapper {
   private int pendingTransitionExitAnimResId = -1;
   private Object lastNonConfigurationInstance;
   private Map<Integer, Dialog> dialogForId = new HashMap<Integer, Dialog>();
-  private CharSequence title;
   private boolean onKeyUpWasCalled;
   private ArrayList<Cursor> managedCusors = new ArrayList<Cursor>();
 
@@ -100,86 +99,6 @@ public class ShadowActivity extends ShadowContextThemeWrapper {
     return false;
   }
 
-  public void callOnCreate(Bundle bundle) {
-    invokeReflectively("onCreate", Bundle.class, bundle);
-  }
-
-  public void callOnRestoreInstanceState(Bundle savedInstanceState) {
-    invokeReflectively("onRestoreInstanceState", Bundle.class, savedInstanceState);
-  }
-
-  public void callOnPostCreate(android.os.Bundle savedInstanceState) {
-    invokeReflectively("onPostCreate", Bundle.class, savedInstanceState);
-  }
-
-  public void callOnStart() {
-    invokeReflectively("onStart");
-  }
-
-  public void callOnRestart() {
-    invokeReflectively("onRestart");
-  }
-
-  public void callOnResume() {
-    invokeReflectively("onResume");
-  }
-
-  public void callOnPostResume() {
-    invokeReflectively("onPostResume");
-  }
-
-  public void callOnNewIntent(android.content.Intent intent) {
-    invokeReflectively("onNewIntent", Intent.class, intent);
-  }
-
-  public void callOnSaveInstanceState(android.os.Bundle outState) {
-    invokeReflectively("onSaveInstanceState", Bundle.class, outState);
-  }
-
-  public void callOnPause() {
-    invokeReflectively("onPause");
-  }
-
-  public void callOnUserLeaveHint() {
-    invokeReflectively("onUserLeaveHint");
-  }
-
-  public void callOnStop() {
-    invokeReflectively("onStop");
-  }
-
-  public void callOnDestroy() {
-    invokeReflectively("onDestroy");
-  }
-
-  private void invokeReflectively(String methodName, Class<?> argClass, Object arg) {
-    try {
-      Method method = Activity.class.getDeclaredMethod(methodName, argClass);
-      method.setAccessible(true);
-      method.invoke(realActivity, arg);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (InvocationTargetException e) {
-      throw new RuntimeException(e);
-    } catch (NoSuchMethodException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private void invokeReflectively(String methodName) {
-    try {
-      Method method = Activity.class.getDeclaredMethod(methodName);
-      method.setAccessible(true);
-      method.invoke(realActivity);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (InvocationTargetException e) {
-      throw new RuntimeException(e);
-    } catch (NoSuchMethodException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   @Implementation
   public final Application getApplication() {
     return Robolectric.application;
@@ -190,12 +109,6 @@ public class ShadowActivity extends ShadowContextThemeWrapper {
   public final Application getApplicationContext() {
     return getApplication();
   }
-
-  //@Override
-  //@Implementation
-  //public Object getSystemService(String name) {
-  //  return getApplicationContext().getSystemService(name);
-  //}
 
   @Implementation
   public ComponentName getCallingActivity() {
@@ -226,21 +139,6 @@ public class ShadowActivity extends ShadowContextThemeWrapper {
 
   public int getDefaultKeymode() {
     return mDefaultKeyMode;
-  }
-
-  @Implementation(i18nSafe = false)
-  public void setTitle(CharSequence title) {
-    this.title = title;
-  }
-
-  @Implementation
-  public void setTitle(int titleId) {
-    this.title = this.getResources().getString(titleId);
-  }
-
-  @Implementation
-  public CharSequence getTitle() {
-    return title;
   }
 
   @Implementation

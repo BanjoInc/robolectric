@@ -7,15 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.view.View;
-import android.view.Window;
+import org.robolectric.AndroidManifest;
 import org.robolectric.RoboInstrumentation;
 import org.robolectric.Robolectric;
+import org.robolectric.res.ResName;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowActivityThread;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowLooper;
 
 import static org.fest.reflect.core.Reflection.constructor;
@@ -84,6 +87,7 @@ public class ActivityController<T extends Activity> {
       intent.setClass(application, activity.getClass());
     }
     ActivityInfo activityInfo = new ActivityInfo();
+    String activityTitle = getActivityTitle();
 
     ClassLoader cl = baseContext.getClassLoader();
     Class<?> activityThreadClass = type(ShadowActivityThread.CLASS_NAME).withClassLoader(cl).load();
@@ -100,14 +104,43 @@ public class ActivityController<T extends Activity> {
     ).in(activity).invoke(baseContext, null /* aThread */,
         new RoboInstrumentation(), null /* token */, 0 /* ident */,
         application, intent /* intent */, activityInfo,
-        "title", null /* parent */, "id",
+        activityTitle, null /* parent */, "id",
         null /* lastNonConfigurationInstances */,
         application.getResources().getConfiguration());
 
     shadowActivity.setThemeFromManifest();
-
     attached = true;
     return this;
+  }
+
+  private String getActivityTitle() {
+    String title = null;
+
+    /* Get the label for the activity from the manifest */
+    ShadowApplication shadowApplication = shadowOf_(activity.getApplication());
+    AndroidManifest appManifest = shadowApplication.getAppManifest();
+    if (appManifest == null) return null;
+    String labelRef = appManifest.getActivityLabel(activity.getClass());
+
+    if (labelRef != null) {
+      if(labelRef.startsWith("@")){
+        /* Label refers to a string value, get the resource identifier */
+        ResName style = ResName.qualifyResName(labelRef.replace("@", ""), appManifest.getPackageName(), "string");
+        Integer labelRes = shadowApplication.getResourceLoader().getResourceIndex().getResourceId(style);
+
+        /* If we couldn't determine the resource ID, throw it up */
+        if (labelRes == null) {
+          throw new Resources.NotFoundException("no such label " + style.getFullyQualifiedName());
+        }
+
+        /* Get the resource ID, use the activity to look up the actual string */
+        title = activity.getString(labelRes);
+      } else {
+        title = labelRef; /* Label isn't an identifier, use it directly as the title */
+      }
+    }
+
+    return title;
   }
 
   public ActivityController<T> create(final Bundle bundle) {
@@ -115,7 +148,6 @@ public class ActivityController<T extends Activity> {
       @Override
       public void run() {
         if (!attached) attach();
-
         method("performCreate").withParameterTypes(Bundle.class).in(activity).invoke(bundle);
       }
     });
@@ -127,17 +159,12 @@ public class ActivityController<T extends Activity> {
   }
 
   public ActivityController<T> restoreInstanceState(Bundle bundle) {
-    method("performRestoreInstanceState").withParameterTypes(Bundle.class).in(activity).invoke(bundle);
+    invokeWhilePaused("performRestoreInstanceState", bundle);
     return this;
   }
 
-  public ActivityController<T> postCreate(final Bundle bundle) {
-    shadowMainLooper.runPaused(new Runnable() {
-      @Override
-      public void run() {
-        shadowActivity.callOnPostCreate(bundle);
-      }
-    });
+  public ActivityController<T> postCreate(Bundle bundle) {
+    invokeWhilePaused("onPostCreate", bundle);
     return this;
   }
 
@@ -157,27 +184,17 @@ public class ActivityController<T extends Activity> {
   }
 
   public ActivityController<T> postResume() {
-    shadowMainLooper.runPaused(new Runnable() {
-      @Override
-      public void run() {
-        shadowActivity.callOnPostResume();
-      }
-    });
+    invokeWhilePaused("onPostResume");
     return this;
   }
 
-  public ActivityController<T> newIntent(final android.content.Intent intent) {
-    shadowMainLooper.runPaused(new Runnable() {
-      @Override
-      public void run() {
-        shadowActivity.callOnNewIntent(intent);
-      }
-    });
+  public ActivityController<T> newIntent(Intent intent) {
+    invokeWhilePaused("onNewIntent", intent);
     return this;
   }
 
-  public ActivityController<T> saveInstanceState(android.os.Bundle outState) {
-    method("performSaveInstanceState").withParameterTypes(Bundle.class).in(activity).invoke(outState);
+  public ActivityController<T> saveInstanceState(Bundle outState) {
+    invokeWhilePaused("performSaveInstanceState", outState);
     return this;
   }
 
@@ -213,10 +230,10 @@ public class ActivityController<T extends Activity> {
     return this;
   }
 
-  private ActivityController<T> invokeWhilePaused(final String performStart) {
+  private ActivityController<T> invokeWhilePaused(final String methodName, final Object... args) {
     shadowMainLooper.runPaused(new Runnable() {
       @Override public void run() {
-        method(performStart).in(activity).invoke();
+        method(methodName).in(activity).invoke(args);
       }
     });
     return this;
